@@ -2,19 +2,33 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_song/constants/size.dart';
 import 'package:instagram_song/utils/profile_img_path.dart';
+import 'package:instagram_song/widgets/profile_side_menu.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  bool _menuopened = false;
+class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStateMixin{
+  AnimationController _animationController;
+  bool _menuOpened = false;
   double menuWidth;
   int duration = 200;
   AlignmentGeometry tabAlign = Alignment.centerLeft;
   double _gridMargin = 0;
   double _myImgGridMargin = size.width;
+
+  @override
+  void initState(){
+    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: duration));
+    super.initState();
+  }
+
+  @override
+  void dispose(){
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,22 +52,14 @@ class _ProfilePageState extends State<ProfilePage> {
       color: Colors.grey[200],
       duration: Duration(milliseconds: duration),
       transform: Matrix4.translationValues(
-        _menuopened ? (size.width - menuWidth) : size.width,
+        _menuOpened ? (size.width - menuWidth) : size.width,
         0,
         0,
       ),
       child: SafeArea(
         child: SizedBox(
           width: menuWidth,
-          child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                FlatButton(
-                  child: Text('songdol'),
-                  onPressed: null,
-                )
-              ]),
+          child: ProfileSideMenu(),
         ),
       ),
     );
@@ -65,7 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
       curve: Curves.easeInOut,
       color: Colors.transparent,
       transform: Matrix4.translationValues(
-        _menuopened ? -menuWidth : 0,
+        _menuOpened ? -menuWidth : 0,
         0,
         0,
       ),
@@ -100,14 +106,14 @@ class _ProfilePageState extends State<ProfilePage> {
         AnimatedContainer(
           transform: Matrix4.translationValues(_gridMargin, 0, 0),
           curve: Curves.easeInOut,
-          duration: Duration(milliseconds: 200),
+          duration: Duration(milliseconds: duration),
           child:_imageGrid,
 
         ),
         AnimatedContainer(
           transform: Matrix4.translationValues(_myImgGridMargin, 0, 0),
           curve: Curves.easeInOut,
-          duration: Duration(milliseconds: 200),
+          duration: Duration(milliseconds: duration),
           child:_imageGrid,
         )
       ]));
@@ -222,10 +228,15 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         )),
         IconButton(
-          icon: Icon(Icons.menu),
+          icon: AnimatedIcon(
+            icon: AnimatedIcons.menu_close,
+            progress: _animationController,
+            semanticLabel: 'Show menu',
+          ),
           onPressed: () {
+            _menuOpened ? _animationController.reverse() : _animationController.forward();
             setState(() {
-              _menuopened = !_menuopened;
+              _menuOpened = !_menuOpened;
             });
           },
         )
@@ -251,7 +262,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget get _getAnimatedSelectedBar => AnimatedContainer(
         alignment: tabAlign,
-        duration: Duration(milliseconds: 200),
+        duration: Duration(milliseconds: duration),
         curve: Curves.easeInOut,
         color: Colors.transparent,
         height: 1,

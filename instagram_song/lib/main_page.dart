@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_song/screens/feed_page.dart';
 import 'package:instagram_song/screens/profile_page.dart';
+import 'package:instagram_song/screens/search_page.dart';
 
 import 'constants/size.dart';
 
@@ -15,7 +16,7 @@ class _MainPageState extends State<MainPage> {
 
   static List<Widget> _widgetOptions = <Widget>[
     FeedPage(),
-    Container(color: Colors.primaries[1],),
+    SearchPage(),
     Container(color: Colors.primaries[2],),
     Container(color: Colors.primaries[3],),
     ProfilePage(),
