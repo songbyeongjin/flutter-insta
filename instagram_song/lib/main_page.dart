@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_song/screens/camera_page.dart';
 import 'package:instagram_song/screens/feed_page.dart';
 import 'package:instagram_song/screens/profile_page.dart';
 import 'package:instagram_song/screens/search_page.dart';
@@ -60,9 +61,23 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _onItemTapped(int index) {
-   setState((){
-     _selectedIndex = index;
-   });
+    if(index == 2)
+      {
+        openCamera(context);
+      }
+    else
+      {
+        setState((){
+          _selectedIndex = index;
+        });
+      }
+
+  }
+  
+  openCamera(BuildContext context){
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) => Camerapage()
+    ));
   }
 }
 
